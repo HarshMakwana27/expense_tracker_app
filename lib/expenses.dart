@@ -28,8 +28,39 @@ class _ExpensesState extends State<Expenses> {
 
   void _openAddExpenseOverlay() {
     showModalBottomSheet(
+      isScrollControlled: true,
       context: context,
-      builder: (ctx) => const NewExpense(),
+      builder: (ctx) => NewExpense(addExpense),
+    );
+  }
+
+  void addExpense(Expense newExpense) {
+    setState(() {
+      registeredExpenses.add(newExpense);
+    });
+  }
+
+  void removeExpense(Expense expense) {
+    final removedIndex = registeredExpenses.indexOf(expense);
+    setState(() {
+      registeredExpenses.remove(expense);
+    });
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: const Duration(seconds: 5),
+        content: const Text('Expense Deleted'),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {
+            setState(
+              () {
+                registeredExpenses.insert(removedIndex, expense);
+              },
+            );
+          },
+        ),
+      ),
     );
   }
 
@@ -46,7 +77,10 @@ class _ExpensesState extends State<Expenses> {
       body: Column(
         children: [
           const Text('Chart'),
-          Expanded(child: ExpensesList(registeredExpenses)),
+          Expanded(
+              child: registeredExpenses.isEmpty
+                  ? const Center(child: Text('No Expenses to show'))
+                  : ExpensesList(registeredExpenses, removeExpense)),
         ],
       ),
     );
