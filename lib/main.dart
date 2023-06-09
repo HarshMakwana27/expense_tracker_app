@@ -2,7 +2,7 @@ import 'package:expense_app/splash_screen.dart';
 import 'package:flutter/material.dart';
 
 const kColorScheme = ColorScheme(
-    primary: Color.fromARGB(255, 10, 21, 183),
+    primary: Color.fromARGB(071370, 7, 19, 112),
     onPrimary: Color.fromARGB(255, 255, 255, 255),
     secondary: Color.fromRGBO(90, 93, 187, 1),
     brightness: Brightness.light,

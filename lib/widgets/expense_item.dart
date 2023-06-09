@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:expense_app/model/expense.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ExpenseItem extends StatelessWidget {
   const ExpenseItem(this.expenseItem, {super.key});
@@ -33,8 +34,8 @@ class ExpenseItem extends StatelessWidget {
           children: [
             Text(
               expenseItem.title,
-              style: const TextStyle(
-                fontSize: 18,
+              style: GoogleFonts.poppins(
+                fontSize: 17,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -42,7 +43,10 @@ class ExpenseItem extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text('₹${expenseItem.amount.toStringAsFixed(2)}'),
+                Text(
+                  '₹${expenseItem.amount.toStringAsFixed(2)}',
+                  style: GoogleFonts.poppins(),
+                ),
                 const Spacer(),
                 Row(
                   children: [
@@ -50,7 +54,7 @@ class ExpenseItem extends StatelessWidget {
                     const SizedBox(width: 6),
                     Text(expenseItem.formattedDate)
                   ],
-                )
+                ),
               ],
             )
           ],

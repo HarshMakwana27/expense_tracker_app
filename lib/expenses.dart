@@ -2,6 +2,7 @@ import 'package:expense_app/widgets/expenses_list.dart';
 import 'package:expense_app/widgets/new_expense.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_app/model/expense.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Expenses extends StatefulWidget {
   const Expenses({super.key});
@@ -13,18 +14,7 @@ class Expenses extends StatefulWidget {
 }
 
 class _ExpensesState extends State<Expenses> {
-  final List<Expense> registeredExpenses = [
-    Expense(
-        title: 'Swiggy',
-        amount: 200,
-        date: DateTime.now(),
-        category: Category.food),
-    Expense(
-        title: 'Farewell',
-        amount: 500,
-        date: DateTime.now(),
-        category: Category.leisue)
-  ];
+  final List<Expense> registeredExpenses = [];
 
   void _openAddExpenseOverlay() {
     showModalBottomSheet(
@@ -64,6 +54,15 @@ class _ExpensesState extends State<Expenses> {
     );
   }
 
+  double getTotalExpense() {
+    double totalExpense = 0;
+    for (int i = 0; i < registeredExpenses.length; i++) {
+      totalExpense = totalExpense + registeredExpenses[i].amount;
+    }
+
+    return totalExpense;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,11 +75,83 @@ class _ExpensesState extends State<Expenses> {
       ),
       body: Column(
         children: [
-          const Text('Chart'),
           Expanded(
-              child: registeredExpenses.isEmpty
-                  ? const Center(child: Text('No Expenses to show'))
-                  : ExpensesList(registeredExpenses, removeExpense)),
+            child: registeredExpenses.isEmpty
+                ? const Center(
+                    child: Text('No Expenses to show'),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          'Total Expense',
+                          style: GoogleFonts.poppins(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 20),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Total Cost :  ${getTotalExpense().toString()}',
+                                      textScaleFactor: 1.2,
+                                      style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onBackground,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {},
+                                      child: const Text('view more'),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 20),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          'Expense List',
+                          style: GoogleFonts.poppins(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Expanded(
+                            child: ExpensesList(
+                                registeredExpenses, removeExpense)),
+                      ],
+                    ),
+                  ),
+          ),
         ],
       ),
     );
