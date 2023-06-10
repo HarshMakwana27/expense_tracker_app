@@ -1,8 +1,12 @@
+import 'package:expense_app/graph.dart';
+import 'package:expense_app/total_expense.dart';
 import 'package:expense_app/widgets/expenses_list.dart';
 import 'package:expense_app/widgets/new_expense.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_app/model/expense.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+final List<Expense> registeredExpenses = [];
 
 class Expenses extends StatefulWidget {
   const Expenses({super.key});
@@ -14,8 +18,6 @@ class Expenses extends StatefulWidget {
 }
 
 class _ExpensesState extends State<Expenses> {
-  final List<Expense> registeredExpenses = [];
-
   void _openAddExpenseOverlay() {
     showModalBottomSheet(
       isScrollControlled: true,
@@ -63,6 +65,12 @@ class _ExpensesState extends State<Expenses> {
     return totalExpense;
   }
 
+  void getGraph() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => const Graph()));
+  }
+
+  final double monthlyLimit = 500;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,52 +96,36 @@ class _ExpensesState extends State<Expenses> {
                         const SizedBox(
                           height: 10,
                         ),
-                        Text(
-                          'Total Expense',
-                          style: GoogleFonts.poppins(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15),
-                            child: Column(
-                              children: [
-                                const SizedBox(height: 20),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Total Cost :  ${getTotalExpense().toString()}',
-                                      textScaleFactor: 1.2,
-                                      style: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onBackground,
-                                        fontSize: 15,
-                                      ),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {},
-                                      child: const Text('view more'),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 20),
-                              ],
+                        Row(
+                          children: [
+                            Text(
+                              'Total Expense',
+                              style: GoogleFonts.poppins(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
+                            const Spacer(),
+                            TextButton(
+                              onPressed: getGraph,
+                              child: Text(
+                                'view more >',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 10,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onBackground,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(
-                          height: 20,
+                          height: 10,
+                        ),
+                        TotalExpense(getTotalExpense(), monthlyLimit),
+                        const SizedBox(
+                          height: 15,
                         ),
                         Text(
                           'Expense List',
@@ -143,11 +135,12 @@ class _ExpensesState extends State<Expenses> {
                           ),
                         ),
                         const SizedBox(
-                          height: 20,
+                          height: 15,
                         ),
                         Expanded(
-                            child: ExpensesList(
-                                registeredExpenses, removeExpense)),
+                          child:
+                              ExpensesList(registeredExpenses, removeExpense),
+                        ),
                       ],
                     ),
                   ),
