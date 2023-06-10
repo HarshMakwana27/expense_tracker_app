@@ -1,5 +1,6 @@
 import 'package:expense_app/splash_screen.dart';
 import 'package:flutter/material.dart';
+// import 'package:flutter/services.dart';
 
 const kColorScheme = ColorScheme(
   primary: Color.fromARGB(071370, 7, 19, 112),
@@ -31,6 +32,10 @@ const kDarkColorScheme = ColorScheme(
     surface: Colors.black);
 
 void main() {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setPreferredOrientations([
+  //   DeviceOrientation.portraitUp,
+  // ]).then((fn) {
   runApp(
     MaterialApp(
       darkTheme: ThemeData.dark().copyWith(
@@ -55,4 +60,5 @@ void main() {
       home: const SplashScreen(),
     ),
   );
+  // });
 }

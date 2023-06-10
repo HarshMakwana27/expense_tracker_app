@@ -6,7 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:expense_app/model/expense.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-final List<Expense> registeredExpenses = [];
+final List<Expense> registeredExpenses = [
+  Expense(
+      title: 'Swiggy',
+      amount: 450,
+      date: DateTime.now(),
+      category: Category.food),
+];
 
 class Expenses extends StatefulWidget {
   const Expenses({super.key});
@@ -20,6 +26,7 @@ class Expenses extends StatefulWidget {
 class _ExpensesState extends State<Expenses> {
   void _openAddExpenseOverlay() {
     showModalBottomSheet(
+      useSafeArea: true,
       isScrollControlled: true,
       context: context,
       builder: (ctx) => NewExpense(addExpense),
@@ -73,6 +80,8 @@ class _ExpensesState extends State<Expenses> {
   final double monthlyLimit = 500;
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Expense tracker app'),
@@ -81,72 +90,132 @@ class _ExpensesState extends State<Expenses> {
               onPressed: _openAddExpenseOverlay, icon: const Icon(Icons.add))
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: registeredExpenses.isEmpty
-                ? const Center(
-                    child: Text('No Expenses to show'),
-                  )
-                : Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              'Total Expense',
-                              style: GoogleFonts.poppins(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+      body: width < height
+          ? Column(
+              children: [
+                Expanded(
+                  child: registeredExpenses.isEmpty
+                      ? const Center(
+                          child: Text('No Expenses to show'),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(
+                                height: 10,
                               ),
-                            ),
-                            const Spacer(),
-                            TextButton(
-                              onPressed: getGraph,
-                              child: Text(
-                                'view more >',
+                              Row(
+                                children: [
+                                  Text(
+                                    'Total Expense',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  TextButton(
+                                    onPressed: getGraph,
+                                    child: Text(
+                                      'view more >',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 10,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onBackground,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              TotalExpense(getTotalExpense(), monthlyLimit),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Text(
+                                'Expense List',
                                 style: GoogleFonts.poppins(
-                                  fontSize: 10,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onBackground,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        TotalExpense(getTotalExpense(), monthlyLimit),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          'Expense List',
-                          style: GoogleFonts.poppins(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Expanded(
+                                child: ExpensesList(
+                                    registeredExpenses, removeExpense),
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(
-                          height: 15,
+                ),
+              ],
+            )
+          : registeredExpenses.isEmpty
+              ? const Center(
+                  child: Text('No Expenses to show'),
+                )
+              : Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SingleChildScrollView(
+                      child: Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              SizedBox(
+                                width: width / 2,
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      'Total Expense',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    TextButton(
+                                      onPressed: getGraph,
+                                      child: Text(
+                                        'view more >',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 10,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onBackground,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                width: width / 2,
+                                child: TotalExpense(
+                                    getTotalExpense(), monthlyLimit),
+                              ),
+                            ],
+                          ),
                         ),
-                        Expanded(
-                          child:
-                              ExpensesList(registeredExpenses, removeExpense),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-          ),
-        ],
-      ),
+                    Expanded(
+                      child: ExpensesList(registeredExpenses, removeExpense),
+                    ),
+                  ],
+                ),
     );
   }
 }
